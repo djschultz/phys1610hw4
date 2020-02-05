@@ -6,9 +6,9 @@
 #include <rarrayio>
 #include <fstream>
 
-void print_rarray(rarray<int,2> myrarray, std::string filename){
-    std::ofstream f(filename, std::ios::binary);
-    f.write("o");
+void write_bin_file(int* myrarray, std::string filename, int arraySize){
+    std::ofstream f(filename, std::ofstream::binary | std::ofstream::app);
+    f.write((char*)myrarray, arraySize);
     f.close();
 }
 

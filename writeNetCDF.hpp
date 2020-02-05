@@ -1,13 +1,14 @@
 //phys1610hw3
 
-#ifndef append_array__hpp
-#define append_array__hpp
+#ifndef writeNetCDF__hpp
+#define writeNetCDF__hpp
 
 #include <stdio.h>
 #include <rarray>
+
 /// @brief a function that appends myrarray to a file called filename
 /// @param myrarray is an array to print
 /// @param filename is the name of the file that we're prrinting to
-void write_bin_file(int* myrarray, std::string filename, int arraySize);
+void write_netcdf_file(int* myrarray, std::string filename, int dim1, int dim2);
 
-#endif /* append_array_hpp */
+#endif /* writeNetCDF_hpp */

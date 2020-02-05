@@ -37,6 +37,7 @@
 #include "timeEvolve.hpp"
 #include "report.hpp"
 #include "append_array.hpp"
+#include "writeNetCDF.hpp"
 
 // There are (3 in the i direction)x(3 in the j direction)=9 possible moves
 const int nmoves = 9;
@@ -44,14 +45,14 @@ const int moves[nmoves][2] = {{-1,-1},{-1,0},{-1,1}, {0,-1}, {0,0}, {0,1}, {1,-1
 
 // Main driver function of antsontable.cc
 
-int main()
+int main(int argc, const char * argv[])
 {
     // ====================== parameters  ==================== //
     
     int length     = 70;     // length of the table
     int ntimesteps = 10000;  // number of time steps to take
     int total_ants = 40000;  // initial number of ants
-
+    int tableSize = length*length;
     // ===================== define arrays  ================== //
     
     // work arrays; these are linearized two-dimensional arrays
@@ -80,7 +81,8 @@ int main()
     // report
     report(0,antData);
     
-    std::string filename = "ants.rat";
+    std::string bin_filename = "ants.bin";
+    std::string netCDF_filename = "ants.nc";
     // run time steps
     for (int timestep = 0; timestep < ntimesteps; timestep++) {
         // Reset antData array
@@ -90,10 +92,11 @@ int main()
 
         // Perform a time step of the ants' movement.
         incrementTime(length, nmoves, timestep, antData, number_of_ants_on_table, new_number_of_ants_on_table, partition, moves);
-	
+
         if(timestep%1000 == 0){
-	  print_rarray(number_of_ants_on_table, filename);
-	}
+          write_bin_file(number_of_ants_on_table.data(), bin_filename, tableSize);
+          write_netcdf_file(number_of_ants_on_table.data(), netCDF_filename, length, length);
+        }
     }
     return 0;
 }
