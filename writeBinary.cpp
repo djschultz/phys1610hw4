@@ -1,6 +1,6 @@
 // phys1610hw3
 
-#include "append_array.hpp"
+#include "writeBinary.hpp"
 #include <iostream>
 #include <rarray>
 #include <rarrayio>

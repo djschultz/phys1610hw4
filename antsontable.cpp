@@ -36,7 +36,8 @@
 #include "ants.hpp"
 #include "timeEvolve.hpp"
 #include "report.hpp"
-#include "append_array.hpp"
+#include "writeText.hpp"
+#include "writeBinary.hpp"
 #include "writeNetCDF.hpp"
 
 // There are (3 in the i direction)x(3 in the j direction)=9 possible moves
