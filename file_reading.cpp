@@ -31,15 +31,14 @@
 
 #include <iostream>
 #include <rarray>
-#include <netcdf>
-#include "partition.hpp"
+//#include "partition.hpp"
 #include "vectorization.hpp"
 #include "ants.hpp"
-#include "timeEvolve.hpp"
+//#include "timeEvolve.hpp"
 #include "report.hpp"
-#include "writeText.hpp"
-#include "writeBinary.hpp"
-#include "writeNetCDF.hpp"
+#include "readText.hpp"
+//#include "readBinary.hpp"
+#include "readNetCDF.hpp"
 
 // There are (3 in the i direction)x(3 in the j direction)=9 possible moves
 const int nmoves = 9;
@@ -60,11 +59,10 @@ int main(int argc, const char * argv[])
     // work arrays; these are linearized two-dimensional arrays
     rarray<int,2> number_of_ants_on_table(length,length);   // distribution of ants on the table over squares.
     rarray<int,2> new_number_of_ants_on_table(length,length); // auxiliary array used in time step to hold the new distribution of ants
-    rarray<int,1> partition(nmoves);                 // used to determine how many ants move in which direction in a time step
 
     // ===================== initialize simulation ================== //
     
-    placeAnts(length, total_ants, number_of_ants_on_table);
+   // placeAnts(length, total_ants, number_of_ants_on_table);
 
     // count ants and determine minimum and maximum number on a square
         
@@ -76,48 +74,34 @@ int main(int argc, const char * argv[])
     antData[2] = 0;
     
     //Count how many total ants there are on the table. This total number is put into antData[2].
-    countAnts(length, antData, number_of_ants_on_table);
+    //countAnts(length, antData, number_of_ants_on_table);
     
     // ===================== start simulation ================== //
     
     // report
-    report(0,antData);
+   // report(0,antData);
     std::string text_filename = "ants.dat"; 
     std::string bin_filename = "ants.bin";
     std::string netCDF_filename = "ants.nc";
-    int dataSetNum = 0;
-    // Create a NetCDF file
-    netCDF::NcFile dataFile(netCDF_filename, netCDF::NcFile::replace);
-    netCDF::NcVar antsVar = create_netcdf_file(netCDF_filename, length, length, dataFile);
-    // run time steps
-    for (int timestep = 0; timestep < ntimesteps; timestep++) {
-        // Reset antData array
+
         antData[0] = total_ants;
         antData[1] = 0;
         antData[2] = 0;
 
-        // Perform a time step of the ants' movement.
-        incrementTime(length, nmoves, timestep, antData, number_of_ants_on_table, new_number_of_ants_on_table, partition, moves);
-
-        if(timestep%1000 == 0){
-          
             if(writeOption.compare("-r")==0){
-               write_text_file(number_of_ants_on_table, text_filename);
-            }
-            else{
-                if(writeOption.compare("-b")==0){
-                    write_bin_file(number_of_ants_on_table.data(), bin_filename, length*length);
+              read_text_file(number_of_ants_on_table, text_filename, 5);
+              }
+              else{
+                  if(writeOption.compare("-b")==0){
+              //      read_bin_file(number_of_ants_on_table.data(), bin_filename, tableSize);
                 }
                 else{ 
                     if(writeOption.compare("-n")==0){
-                        std::cout << "lol";
-                        write_netcdf_file(number_of_ants_on_table, antsVar , length, length, dataSetNum, dataFile);
+                      //  read_netcdf_file(number_of_ants_on_table.data(), netCDF_filename);
                     }
                 }  
            } 
-           dataSetNum++;
-        }
-    }
+
     return 0;
 }
 
