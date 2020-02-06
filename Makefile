@@ -17,14 +17,14 @@ all: antsontable file_reading
 antsontable: antsontable.o ants.o partition.o vectorization.o timeEvolve.o report.o writeText.o writeBinary.o writeNetCDF.o
 	$(CXX) $(flags) -o antsontable antsontable.o ants.o partition.o vectorization.o timeEvolve.o report.o writeText.o writeBinary.o -L$(NETCDF_LIB) writeNetCDF.o -lnetcdf_c++4
 
-file_reading: file_reading.o ants.o vectorization.o report.o readText.o readNetCDF.o
-	$(CXX) $(flags) -o file_reading file_reading.o ants.o vectorization.o report.o readText.o -L$(NETCDF_LIB) readNetCDF.o -lnetcdf_c++4
+file_reading: file_reading.o ants.o vectorization.o report.o readText.o readBinary.o readNetCDF.o
+	$(CXX) $(flags) -o file_reading file_reading.o ants.o vectorization.o report.o readText.o readBinary.o -L$(NETCDF_LIB) readNetCDF.o -lnetcdf_c++4
 
 #Individually compile all of the modules without making an executable
 antsontable.o: antsontable.cpp ants.hpp partition.hpp vectorization.hpp timeEvolve.hpp report.hpp
 	$(CXX) $(flags) -c -o antsontable.o antsontable.cpp
 
-file_reading.o: file_reading.cpp ants.hpp vectorization.hpp report.hpp readText.hpp readNetCDF.hpp
+file_reading.o: file_reading.cpp ants.hpp vectorization.hpp report.hpp readText.hpp readBinary.hpp readNetCDF.hpp
 	$(CXX) $(flags) -c -o file_reading.o file_reading.cpp
 
 ants.o: ants.cpp vectorization.hpp
@@ -51,12 +51,15 @@ writeBinary.o: writeBinary.cpp
 writeNetCDF.o: writeNetCDF.cpp
 	$(CXX) -I$(NETCDF_INC) -c -o writeNetCDF.o writeNetCDF.cpp
 
-readText.o: readText.cpp
+readText.o: readText.cpp ants.hpp
 	$(CXX) $(flags) -c -o readText.o readText.cpp
+
+readBinary.o: readBinary.cpp
+	$(CXX) $(flags) -c -o readBinary.o readBinary.cpp
 
 readNetCDF.o: readNetCDF.cpp
 	$(CXX) -I$(NETCDF_INC) -c -o readNetCDF.o readNetCDF.cpp
 
 clean: 
-	rm -f antsontable.o ants.o partition.o vectorization.o timeEvolve.o report.o antsontable output.dat writeText.o writeBinary.o writeNetCDF.o ants.dat ants.bin ants.nc
+	rm -f antsontable file_reading antsontable.o ants.o partition.o vectorization.o timeEvolve.o report.o output.dat writeText.o writeBinary.o writeNetCDF.o readText.o readBinary.o readNetCDF.o file_reading.o ants.rat ants.bin ants.nc
 	

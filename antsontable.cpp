@@ -82,7 +82,7 @@ int main(int argc, const char * argv[])
     
     // report
     report(0,antData);
-    std::string text_filename = "ants.dat"; 
+    std::string text_filename = "ants.rat"; 
     std::string bin_filename = "ants.bin";
     std::string netCDF_filename = "ants.nc";
     int dataSetNum = 0;

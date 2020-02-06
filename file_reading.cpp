@@ -31,13 +31,14 @@
 
 #include <iostream>
 #include <rarray>
+#include <fstream>
 //#include "partition.hpp"
 #include "vectorization.hpp"
 #include "ants.hpp"
 //#include "timeEvolve.hpp"
 #include "report.hpp"
 #include "readText.hpp"
-//#include "readBinary.hpp"
+#include "readBinary.hpp"
 #include "readNetCDF.hpp"
 
 // There are (3 in the i direction)x(3 in the j direction)=9 possible moves
@@ -57,8 +58,8 @@ int main(int argc, const char * argv[])
     // ===================== define arrays  ================== //
     
     // work arrays; these are linearized two-dimensional arrays
-    rarray<int,2> number_of_ants_on_table(length,length);   // distribution of ants on the table over squares.
-    rarray<int,2> new_number_of_ants_on_table(length,length); // auxiliary array used in time step to hold the new distribution of ants
+   // rarray<int,2> number_of_ants_on_table(length,length);   // distribution of ants on the table over squares.
+    //rarray<int,2> new_number_of_ants_on_table(length,length); // auxiliary array used in time step to hold the new distribution of ants
 
     // ===================== initialize simulation ================== //
     
@@ -66,38 +67,28 @@ int main(int argc, const char * argv[])
 
     // count ants and determine minimum and maximum number on a square
         
-    //Initialize antData array
-    //the antData contains the minimum number of ants, maximum number of ants, and total number of ants as its zeroth, first, and second element respectively.
-    rarray<int,1> antData(3);
-    antData[0] = total_ants;
-    antData[1] = 0;
-    antData[2] = 0;
-    
     //Count how many total ants there are on the table. This total number is put into antData[2].
     //countAnts(length, antData, number_of_ants_on_table);
     
     // ===================== start simulation ================== //
-    
+   std::cout << "lol";
     // report
    // report(0,antData);
-    std::string text_filename = "ants.dat"; 
+    std::string text_filename = "ants.rat"; 
     std::string bin_filename = "ants.bin";
     std::string netCDF_filename = "ants.nc";
-
-        antData[0] = total_ants;
-        antData[1] = 0;
-        antData[2] = 0;
-
+    int numReads = 10;
             if(writeOption.compare("-r")==0){
-              read_text_file(number_of_ants_on_table, text_filename, 5);
+              std::cout << "lol";
+              read_text_file(length, text_filename, numReads);
               }
               else{
                   if(writeOption.compare("-b")==0){
-              //      read_bin_file(number_of_ants_on_table.data(), bin_filename, tableSize);
+                    read_bin_file(bin_filename, tableSize);
                 }
                 else{ 
                     if(writeOption.compare("-n")==0){
-                      //  read_netcdf_file(number_of_ants_on_table.data(), netCDF_filename);
+                         read_netcdf_file( netCDF_filename, numReads);
                     }
                 }  
            } 
