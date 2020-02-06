@@ -10,7 +10,7 @@
 #define partition_hpp
 
 #include <stdio.h>
-
+#include <random>
 /// @brief Function to randomly divide a number 'total' into a set of 'numdivision' numbers that add up to 'total'. Uses the C++ random library to generate the randomness.
 /// @param total number that is to be subdivided (input)
 /// @param nparts number of partitions into which to divide 'total (input)

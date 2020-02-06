@@ -40,10 +40,13 @@
 #include "writeText.hpp"
 #include "writeBinary.hpp"
 #include "writeNetCDF.hpp"
+#include <random>
 
 // There are (3 in the i direction)x(3 in the j direction)=9 possible moves
 const int nmoves = 9;
 const int moves[nmoves][2] = {{-1,-1},{-1,0},{-1,1}, {0,-1}, {0,0}, {0,1}, {1,-1}, {1,0}, {1,1}};
+size_t seed;
+std::mt19937 engine;
 
 // Main driver function of antsontable.cc
 
@@ -51,9 +54,15 @@ int main(int argc, const char * argv[])
 {
     // ====================== parameters  ==================== //
     std::string writeOption = argv[1]; 
-    int length     = 70;     // length of the table
-    int ntimesteps = 10000;  // number of time steps to take
-    int total_ants = 40000;  // initial number of ants
+    std::string filename = argv[2];
+    int outputInc = atoi(argv[3]);
+    int length = atoi(argv[4]);
+    int total_ants = atoi(argv[5]);
+    int ntimesteps = atoi( argv[6]);
+    size_t seed = atoi(argv[7]);
+    //int length     = 70;     // length of the table
+    //int ntimesteps = 10000;  // number of time steps to take
+    //int total_ants = 40000;  // initial number of ants
     int tableSize = length*length;
     // ===================== define arrays  ================== //
     
@@ -65,7 +74,7 @@ int main(int argc, const char * argv[])
     // ===================== initialize simulation ================== //
     
     placeAnts(length, total_ants, number_of_ants_on_table);
-
+    engine = std::mt19937(seed);
     // count ants and determine minimum and maximum number on a square
         
     //Initialize antData array
@@ -82,13 +91,11 @@ int main(int argc, const char * argv[])
     
     // report
     report(0,antData);
-    std::string text_filename = "ants.rat"; 
-    std::string bin_filename = "ants.bin";
-    std::string netCDF_filename = "ants.nc";
-    int dataSetNum = 0;
+
+    int dataSetNum = ntimesteps/outputInc;
     // Create a NetCDF file
-    netCDF::NcFile dataFile(netCDF_filename, netCDF::NcFile::replace);
-    netCDF::NcVar antsVar = create_netcdf_file(netCDF_filename, length, length, dataFile);
+    netCDF::NcFile dataFile(filename, netCDF::NcFile::replace);
+    netCDF::NcVar antsVar = create_netcdf_file(filename, length, length, dataFile);
     // run time steps
     for (int timestep = 0; timestep < ntimesteps; timestep++) {
         // Reset antData array
@@ -102,11 +109,11 @@ int main(int argc, const char * argv[])
         if(timestep%1000 == 0){
           
             if(writeOption.compare("-r")==0){
-               write_text_file(number_of_ants_on_table, text_filename);
+               write_text_file(number_of_ants_on_table, filename);
             }
             else{
                 if(writeOption.compare("-b")==0){
-                    write_bin_file(number_of_ants_on_table, bin_filename, length, length);
+                    write_bin_file(number_of_ants_on_table, filename, length, length);
                 }
                 else{ 
                     if(writeOption.compare("-n")==0){

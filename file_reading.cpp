@@ -77,16 +77,15 @@ int main(int argc, const char * argv[])
     std::string netCDF_filename = "ants.nc";
     int numReads = 10;
             if(writeOption.compare("-r")==0){
-              std::cout << "lol";
               read_text_file(length, text_filename, numReads);
               }
               else{
                   if(writeOption.compare("-b")==0){
-                    read_bin_file(bin_filename, length, length);
+                    read_bin_file(bin_filename, length, length, numReads);
                 }
                 else{ 
                     if(writeOption.compare("-n")==0){
-                         read_netcdf_file( netCDF_filename, numReads);
+                         read_netcdf_file( netCDF_filename, numReads, length);
                     }
                 }  
            } 

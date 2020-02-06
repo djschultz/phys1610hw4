@@ -11,11 +11,14 @@
 #include <random>
 #include <algorithm>
 
-size_t seed = 120;     // seed for random number generation
-std::mt19937 engine(seed);
+//size_t seed = 120;     // seed for random number generation
+//std::mt19937 engine(seed);
+extern size_t seed;
+extern std::mt19937 engine;
 
 void rand_partition(int total, int nparts, int* nperpart)
-{
+{  // size_t seed = 120;
+    //std::mt19937 local_engine = std::mt19937(seed);
     // never mind the implementation, we'll see how this works in a future lecture.
     std::uniform_int_distribution<int> uniformint(0, total);
     nperpart[0] = 0;
