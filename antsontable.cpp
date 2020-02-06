@@ -106,7 +106,7 @@ int main(int argc, const char * argv[])
             }
             else{
                 if(writeOption.compare("-b")==0){
-                    write_bin_file(number_of_ants_on_table.data(), bin_filename, length*length);
+                    write_bin_file(number_of_ants_on_table, bin_filename, length, length);
                 }
                 else{ 
                     if(writeOption.compare("-n")==0){

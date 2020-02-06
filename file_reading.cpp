@@ -71,9 +71,7 @@ int main(int argc, const char * argv[])
     //countAnts(length, antData, number_of_ants_on_table);
     
     // ===================== start simulation ================== //
-   std::cout << "lol";
-    // report
-   // report(0,antData);
+
     std::string text_filename = "ants.rat"; 
     std::string bin_filename = "ants.bin";
     std::string netCDF_filename = "ants.nc";
@@ -84,7 +82,7 @@ int main(int argc, const char * argv[])
               }
               else{
                   if(writeOption.compare("-b")==0){
-                    read_bin_file(bin_filename, tableSize);
+                    read_bin_file(bin_filename, length, length);
                 }
                 else{ 
                     if(writeOption.compare("-n")==0){
