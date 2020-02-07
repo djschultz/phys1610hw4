@@ -22,11 +22,11 @@ void placeAnts(int length, int total_ants, rarray<int,2> number_of_ants_on_table
 
 
 void countAnts(int length, int* antData, rarray<int,2> number_of_ants_on_table){
-
+    // put the ants values into intuitive names temporarily
     int nmin = antData[0];
     int nmax = antData[1];
     int total_ants = antData[2];
-    
+    // found the ants at each site on the table
     for (int i = 0; i < length; i++) {
         for (int j = 0; j < length; j++) {
             total_ants += number_of_ants_on_table[i][j];
@@ -38,6 +38,7 @@ void countAnts(int length, int* antData, rarray<int,2> number_of_ants_on_table){
             }
         }
     }
+    // put the ants variables back into the antData array
     antData[0] = nmin;
     antData[1] = nmax;
     antData[2] = total_ants;

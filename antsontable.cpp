@@ -45,6 +45,8 @@
 // There are (3 in the i direction)x(3 in the j direction)=9 possible moves
 const int nmoves = 9;
 const int moves[nmoves][2] = {{-1,-1},{-1,0},{-1,1}, {0,-1}, {0,0}, {0,1}, {1,-1}, {1,0}, {1,1}};
+
+// Create global variables for the random seed and the engine, to be read by the partitioning function
 size_t seed;
 std::mt19937 engine;
 
@@ -52,18 +54,14 @@ std::mt19937 engine;
 
 int main(int argc, const char * argv[])
 {
-    // ====================== parameters  ==================== //
-    std::string writeOption = argv[1]; 
-    std::string filename = argv[2];
-    int outputInc = atoi(argv[3]);
+    // ====================== assign  command line arguments  ==================== //
+    std::string writeOption = argv[1]; // either -r, -b, or -n, determining a .rat, .bin, or .nc file
+    std::string filename = argv[2]; // the filename of the .rat, .bin, or .nc file
+    int outputInc = atoi(argv[3]); // this is the distasnce between consecutice outputs
     int length = atoi(argv[4]);
     int total_ants = atoi(argv[5]);
     int ntimesteps = atoi( argv[6]);
     size_t seed = atoi(argv[7]);
-    //int length     = 70;     // length of the table
-    //int ntimesteps = 10000;  // number of time steps to take
-    //int total_ants = 40000;  // initial number of ants
-    int tableSize = length*length;
     // ===================== define arrays  ================== //
     
     // work arrays; these are linearized two-dimensional arrays
@@ -72,10 +70,9 @@ int main(int argc, const char * argv[])
     rarray<int,1> partition(nmoves);                 // used to determine how many ants move in which direction in a time step
 
     // ===================== initialize simulation ================== //
-    
-    placeAnts(length, total_ants, number_of_ants_on_table);
-    engine = std::mt19937(seed);
-    // count ants and determine minimum and maximum number on a square
+   
+    placeAnts(length, total_ants, number_of_ants_on_table); // place ants on the table
+    engine = std::mt19937(seed); // set the random seed for the time evolution of the ants moving around
         
     //Initialize antData array
     //the antData contains the minimum number of ants, maximum number of ants, and total number of ants as its zeroth, first, and second element respectively.
@@ -91,11 +88,16 @@ int main(int argc, const char * argv[])
     
     // report
     report(0,antData);
-
+    // number of data sets we will write to the data file
     int dataSetNum = ntimesteps/outputInc;
-    // Create a NetCDF file
-    netCDF::NcFile dataFile(filename, netCDF::NcFile::replace);
-    netCDF::NcVar antsVar = create_netcdf_file(filename, length, length, dataFile);
+    
+
+    // Create a NetCDF file, but only if we have the -n flag
+    std::string netCDFDataName = "ants";
+    if(writeOption.compare("-n")==0){
+    define_netcdf_file(filename, length, netCDFDataName); // define netCDF file
+    }
+    
     // run time steps
     for (int timestep = 0; timestep < ntimesteps; timestep++) {
         // Reset antData array
@@ -103,31 +105,19 @@ int main(int argc, const char * argv[])
         antData[1] = 0;
         antData[2] = 0;
 
-        // Perform a time step of the ants' movement.
-        incrementTime(length, nmoves, timestep, antData, number_of_ants_on_table, new_number_of_ants_on_table, partition, moves);
-
-        if(timestep%1000 == 0){
-          
+        if(timestep%outputInc == 0){
             if(writeOption.compare("-r")==0){
-               write_text_file(number_of_ants_on_table, filename);
+               write_text_file(number_of_ants_on_table, filename); // write to the text file if -r flag entered
             }
-            else{
-                if(writeOption.compare("-b")==0){
-                    write_bin_file(number_of_ants_on_table, filename, length, length);
-                }
-                else{ 
-                    if(writeOption.compare("-n")==0){
-                        std::cout << "lol";
-                        write_netcdf_file(number_of_ants_on_table, antsVar , length, length, dataSetNum, dataFile);
-                    }
-                }  
+            if(writeOption.compare("-b")==0){
+                write_bin_file(number_of_ants_on_table, filename, length); // write to the binary file if -b flag entered
+            } 
+            if(writeOption.compare("-n")==0){
+                write_netcdf_file(number_of_ants_on_table, filename, length, timestep/outputInc, netCDFDataName); // write to the netCDf file if the -n flag entered
            } 
-           dataSetNum++;
         }
+       // Perform a time step of the ants' movement.
+       incrementTime(length, nmoves, timestep, antData, number_of_ants_on_table, new_number_of_ants_on_table, partition, moves);
     }
     return 0;
 }
-
-
-
-

@@ -6,15 +6,15 @@
 #include <rarrayio>
 #include <fstream>
 
-void write_bin_file(rarray<int,2> myrarray, std::string filename, int dim1, int dim2){
-    rarray<char,2> my_charrarray(dim1, dim2);
-    for(int i = 0; i < dim1; i++){
-        for(int j = 0; j < dim2; j++){
-            my_charrarray[i][j] = myrarray[i][j];
+void write_bin_file(rarray<int,2> number_of_ants_on_table, std::string filename, int length){
+    rarray<char,2> my_charrarray(length, length); //define an rarray of chars to put into the binary file
+    for(int i = 0; i < length; i++){
+        for(int j = 0; j < length; j++){
+            my_charrarray[i][j] = number_of_ants_on_table[i][j]; // convert the input integer rarray into a char rarray
         }
     }
-    std::ofstream f(filename, std::ofstream::binary | std::ofstream::app);
-    f.write(my_charrarray.data(), dim1*dim2);
-    f.close();
+    std::ofstream f(filename, std::ofstream::binary | std::ofstream::app); // open a stream to a binary file
+    f.write(my_charrarray.data(), length*length); // put the char rarray into the file
+    f.close(); //close the stream
 }
 
